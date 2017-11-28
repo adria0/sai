@@ -130,7 +130,7 @@ contract SaiTub is DSThing, SaiTubEvents {
 
     //--Risk-parameter-config-------------------------------------------
 
-    function mold(bytes32 param, uint val) public note auth {
+    function mold(bytes32 param, uint val) public note auth  {
         if      (param == 'hat') hat = val;
         else if (param == 'mat') mat = val;
         else if (param == 'tax') { require(val >= RAY); drip(); tax = val; }

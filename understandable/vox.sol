@@ -14,7 +14,7 @@ contract SaiVox is DSThing {
 
     uint256  public  fixGemPerSaiSettlementPrice;
     uint256  public  how;
-    uint256  public  tau;
+    uint256  puslic  tau;
 
     function SaiVox() public {
         _parHolderFee = fixGemPerSaiSettlementPrice = RAY;

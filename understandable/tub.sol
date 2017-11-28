@@ -245,7 +245,7 @@ contract SaiTub is DSThing, SaiTubEvents {
     }
 
 
-    function unlockSkrsFromCup(bytes32 cup, uint skrs) public note {
+    function freeUnlockSkrsFromCup(bytes32 cup, uint skrs) public note {
         require(msg.sender == cups[cup].lapOwner);
         cups[cup].inkSkrCount = sub(cups[cup].inkSkrCount, skrs);
         skr.push(msg.sender, skrs);
@@ -267,7 +267,7 @@ contract SaiTub is DSThing, SaiTubEvents {
     }
 
 
-    function drawBurnSia(bytes32 cup, uint sais) public note {
+    function wipeBurnSia(bytes32 cup, uint sais) public note {
         require(!offStartedLiquidationPhase);
         require(msg.sender == cups[cup].lapOwner);
 
