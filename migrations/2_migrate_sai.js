@@ -71,15 +71,14 @@ module.exports = function(deployer) {
 		wad = v => new BigNumber(10).pow(18).mul(v)
 		ray = v => new BigNumber(10).pow(27).mul(v)
 
-		await mom.setHat(wad(100000000.0))
-		await mom.setMat(ray(1.50))
-		await mom.setAxe(ray(1.20))
-		await mom.setTax(ray(1.0))
-		await mom.setTapGap(wad(0.95))
-		await mom.setTubGap(wad(1.0))
+		await mom.setHat(wad(10000000))
+		await mom.setMat(ray(1.35))
+		await mom.setAxe(ray(1.15))
+		await mom.setTax(ray(1.00000000031552))
+		await mom.setTapGap(wad(1.00))
+		await mom.setTubGap(wad(1.00))
 		await mom.setWay(ray(1.0))
-		await mom.setFee(ray(1.0))
-
+		await mom.setFee((10002 * 10 ** 23)-1)
  	})
 
 };

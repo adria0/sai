@@ -78,11 +78,11 @@ contract SaiTub is DSThing, SaiTubEvents {
         return rmul(rumTotalSaiDebtChiNorm, chiAccumuTax());
     }
     // Backing collateral
-    function air() public view returns (uint) {
+    function airSkrInContract() public view returns (uint) {
         return skr.balanceOf(this);
     }
     // Raw collateral
-    function pie() public view returns (uint) {
+    function pieGemsInContract() public view returns (uint) {
         return gem.balanceOf(this);
     }
 
@@ -146,7 +146,8 @@ contract SaiTub is DSThing, SaiTubEvents {
 
     // Wrapper ratio (gem per skr)
     function perGemPerSkrGlobalRatio() public view returns (uint ray) {
-        return skr.totalSupply() == 0 ? RAY : rdiv(pie(), skr.totalSupply());
+        // per = gem.balanceOf(this) / skr.totalSupply()
+        return skr.totalSupply() == 0 ? RAY : rdiv(pieGemsInContract(), skr.totalSupply());
     }
 
     // Join price (gem per skr)
@@ -210,11 +211,14 @@ contract SaiTub is DSThing, SaiTubEvents {
 
     // Abstracted collateral price (ref per skr)
     function tagDollarsPerSkr() public view returns (uint wad) {
+        // per = gem.balanceOf(this) / skr.totalSupply() 
+        // tag = pip * ( gem.balanceOf(this) / skr.totalSupply() )
         return offStartedLiquidationPhase ? fixGemPerSkrSettlementPrice : wmul(perGemPerSkrGlobalRatio(), uint(pipDollarsPerGem.read()));
     }
 
     // Returns true if cup is well-collateralized
     function safe(bytes32 cup) public returns (bool) {
+
         var pro = rmul(tagDollarsPerSkr(), inkSkrCount(cup));
         var con = rmul(voxTargetPriceFeed.par(), tabCupSaiDebtWithoutNorm(cup));
         var min = rmul(con, matLiquidationRatio);

@@ -16,6 +16,9 @@ contract SaiTubEvents {
 }
 
 contract SaiTub is DSThing, SaiTubEvents {
+
+    event Log(string what);
+
     DSToken  public  sai;  // Stablecoin
     DSToken  public  sin;  // Debt (negative sai)
 
@@ -65,17 +68,11 @@ contract SaiTub is DSThing, SaiTubEvents {
         return cups[cup].ink;
     }
 
-    event LogReturn(uint value);
-
     function tab(bytes32 cup) public returns (uint) {
-        uint v = rmul(cups[cup].art, chi());
-        LogReturn(v);
-        return v;
+        return rmul(cups[cup].art, chi());
     }
     function rap(bytes32 cup) public returns (uint) {
-        uint v = sub(rmul(cups[cup].irk, rhi()), tab(cup));
-        LogReturn(v);
-        return v;
+        return sub(rmul(cups[cup].irk, rhi()), tab(cup));
     }
 
     // Total CDP Debt
@@ -186,19 +183,25 @@ contract SaiTub is DSThing, SaiTubEvents {
     function drip() public note {
         if (off) return;
 
+        Log("drip1");
+
         var rho_ = era();
         var age = rho_ - rho;
         if (age == 0) return;    // optimised
         rho = rho_;
 
+        Log("drip2");
+
         var inc = RAY;
 
         if (tax != RAY) {  // optimised
+            Log("drip3");
             inc = rpow(tax, age);
             var din_ = din();
             _chi = rmul(_chi, inc);
             sai.mint(tap, sub(din(), din_));
         }
+        Log("drip4");
 
         // optimised
         if (fee != RAY) inc = rmul(inc, rpow(fee, age));
