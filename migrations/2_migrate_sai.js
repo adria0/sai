@@ -21,7 +21,7 @@ module.exports = function(deployer) {
 	 	const sai = await DSToken.new("SAI");
 	 	const sin = await DSToken.new("SIN");
  		const skr = await DSToken.new("SKR")
-		const tag = await DSValue.new();
+		const pip = await DSValue.new();
 		const pep = await DSValue.new();
 
 		await deployer.deploy(SaiVox)
@@ -34,7 +34,7 @@ module.exports = function(deployer) {
 
 		await deployer.deploy(SaiTub,
 			sai.address,sin.address,skr.address,gem.address,
-			gov.address,tag.adress,pep.adress,vox.address,
+			gov.address,pip.address,pep.address,vox.address,
 			tap.address,pit
 		);
 		const tub = await SaiTub.deployed();

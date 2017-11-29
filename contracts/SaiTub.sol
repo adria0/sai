@@ -64,11 +64,18 @@ contract SaiTub is DSThing, SaiTubEvents {
     function ink(bytes32 cup) public view returns (uint) {
         return cups[cup].ink;
     }
+
+    event LogReturn(uint value);
+
     function tab(bytes32 cup) public returns (uint) {
-        return rmul(cups[cup].art, chi());
+        uint v = rmul(cups[cup].art, chi());
+        LogReturn(v);
+        return v;
     }
     function rap(bytes32 cup) public returns (uint) {
-        return sub(rmul(cups[cup].irk, rhi()), tab(cup));
+        uint v = sub(rmul(cups[cup].irk, rhi()), tab(cup));
+        LogReturn(v);
+        return v;
     }
 
     // Total CDP Debt
@@ -205,11 +212,14 @@ contract SaiTub is DSThing, SaiTubEvents {
     function tag() public view returns (uint wad) {
         return off ? fit : wmul(per(), uint(pip.read()));
     }
+
     // Returns true if cup is well-collateralized
     function safe(bytes32 cup) public returns (bool) {
+
         var pro = rmul(tag(), ink(cup));
         var con = rmul(vox.par(), tab(cup));
         var min = rmul(con, mat);
+
         return pro >= min;
     }
 
@@ -235,6 +245,7 @@ contract SaiTub is DSThing, SaiTubEvents {
         cups[cup].ink = add(cups[cup].ink, wad);
         skr.pull(msg.sender, wad);
     }
+
     function free(bytes32 cup, uint wad) public note {
         require(msg.sender == cups[cup].lad);
         cups[cup].ink = sub(cups[cup].ink, wad);
@@ -254,6 +265,7 @@ contract SaiTub is DSThing, SaiTubEvents {
         require(safe(cup));
         require(sai.totalSupply() <= hat);
     }
+
     function wipe(bytes32 cup, uint wad) public note {
         require(!off);
         require(msg.sender == cups[cup].lad);
