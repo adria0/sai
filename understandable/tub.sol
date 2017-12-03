@@ -69,7 +69,7 @@ contract SaiTub is DSThing, SaiTubEvents {
     function tabCupSaiDebtWithoutNorm(bytes32 cup) public returns (uint) {
         return rmul(cups[cup].artSaiDebtChiNorm, chiAccumuTax());
     }
-    function rap(bytes32 cup) public returns (uint) {
+    function rapCupGovernanceDebt(bytes32 cup) public returns (uint) {
         return sub(rmul(cups[cup].irkSaiDebtRhiNorm, rhi()), tabCupSaiDebtWithoutNorm(cup));
     }
 
@@ -218,12 +218,24 @@ contract SaiTub is DSThing, SaiTubEvents {
 
     // Returns true if cup is well-collateralized
     function safe(bytes32 cup) public returns (bool) {
-
         var pro = rmul(tagDollarsPerSkr(), inkSkrCount(cup));
-        var con = rmul(voxTargetPriceFeed.par(), tabCupSaiDebtWithoutNorm(cup));
-        var min = rmul(con, matLiquidationRatio);
+        var min = rmul(
+            rmul(voxTargetPriceFeed.parHolderFee(), tabCupSaiDebtWithoutNorm(cup)),
+            matLiquidationRatio
+        );
         return pro >= min;
     }
+
+    tagDollarsPerSkr() *  inkSkrCount(cup)
+    (perGemPerSkrGlobalRatio() * uint(pipDollarsPerGem.read()) * inkSkrCount(cup)
+    (perGemPerSkrGlobalRatio() * uint(pipDollarsPerGem.read()) * cups[cup].ink
+
+
+    voxTargetPriceFeed.parHolderFee() * tabCupSaiDebtWithoutNorm(cup) * matLiquidationRatio
+
+    tagDollarsPerSkr() * inkSkrCount(cup) >= 
+    voxTargetPriceFeed.parHolderFee() * tabCupSaiDebtWithoutNorm(cup) * matLiquidationRatio
+
 
     //--CDP-operations--------------------------------------------------
 
@@ -256,33 +268,43 @@ contract SaiTub is DSThing, SaiTubEvents {
         require(safe(cup));
     }
 
-
-    function drawMintSia(bytes32 cup, uint sais) public note {
+    function drawCreateSaiDebt(bytes32 cup, uint sais) public note {
         require(!offStartedLiquidationPhase);
+
         require(msg.sender == cups[cup].lapOwner);
 
+        // update cup.art & rum
         cups[cup].artSaiDebtChiNorm = add(cups[cup].artSaiDebtChiNorm, rdiv(sais, chiAccumuTax()));
         rumTotalSaiDebtChiNorm = add(rumTotalSaiDebtChiNorm, rdiv(sais, chiAccumuTax()));
+
+        // update irk
         cups[cup].irkSaiDebtRhiNorm = add(cups[cup].irkSaiDebtRhiNorm, rdiv(sais, rhi()));
+
+        // mint sais
         sai.mint(cups[cup].lapOwner, sais);
 
+        // check if all is safe
         require(safe(cup));
         require(sai.totalSupply() <= hatMaxSaiDebt);
     }
 
 
-    function wipeBurnSia(bytes32 cup, uint sais) public note {
+    function wipeReturnSaiDebt(bytes32 cup, uint sais) public note {
         require(!offStartedLiquidationPhase);
         require(msg.sender == cups[cup].lapOwner);
 
-        var owe = rmul(sais, rdiv(rap(cup), tabCupSaiDebtWithoutNorm(cup)));
-
+        // update cup.art & rum
         cups[cup].artSaiDebtChiNorm = sub(cups[cup].artSaiDebtChiNorm, rdiv(sais, chiAccumuTax()));
         rumTotalSaiDebtChiNorm = sub(rumTotalSaiDebtChiNorm, rdiv(sais, chiAccumuTax()));
-        cups[cup].irkSaiDebtRhiNorm = sub(cups[cup].irkSaiDebtRhiNorm, rdiv(add(sais, owe), rhi()));
 
+        // destroy sais
         sai.burn(msg.sender, sais);
 
+        // update governance irk
+        var owe = rmul(sais, rdiv(rapCupGovernanceDebt(cup), tabCupSaiDebtWithoutNorm(cup)));
+        cups[cup].irkSaiDebtRhiNorm = sub(cups[cup].irkSaiDebtRhiNorm, rdiv(add(sais, owe), rhi()));
+        
+        // move governance tokens
         var (val, ok) = pepGovernancePriceFeed.peek();
         if (ok && val != 0) gov.move(msg.sender, pitGovernanceWallet, wdiv(owe, uint(val)));
     }
@@ -292,18 +314,25 @@ contract SaiTub is DSThing, SaiTubEvents {
         require(!offStartedLiquidationPhase);
         require(msg.sender == cups[cup].lapOwner);
 
-        if (tabCupSaiDebtWithoutNorm(cup) != 0) drawBurnSia(cup, tabCupSaiDebtWithoutNorm(cup));
-        if (inkSkrCount(cup) != 0) unlockSkrsFromCup(cup, inkSkrCount(cup));
+        // destroy sais and set the sai debt to zero
+        if (tabCupSaiDebtWithoutNorm(cup) != 0)
+            wipeReturnSaiDebt(cup, tabCupSaiDebtWithoutNorm(cup));
+
+        // send back the skrs to owner
+        if (inkSkrCount(cup) != 0)
+            freeUnlockSkrsFromCup(cup, inkSkrCount(cup));
+
         delete cups[cup];
     }
 
-
+    // initiate liquidation of an undercollateral cup
     function biteDestroyCup(bytes32 cup) public note {
         require(!safe(cup) || offStartedLiquidationPhase);
 
         // Take on all of the debt, except unpaid fees
         var saiDebt = tabCupSaiDebtWithoutNorm(cup);
 
+        // create SIN in TAP exactly the amount
         sin.mint(tap, saiDebt);
         rumTotalSaiDebtChiNorm = sub(rumTotalSaiDebtChiNorm, cups[cup].artSaiDebtChiNorm);
 
@@ -323,18 +352,21 @@ contract SaiTub is DSThing, SaiTubEvents {
             owed = cups[cup].inkSkrCount;
         }
 
+        // transfer SKRs to TAP
         skr.push(tap, owed);
         cups[cup].inkSkrCount = sub(cups[cup].inkSkrCount, owed);
     }
 
     // only can be executed by top contract
-
     function cageStartLiquidationPhase(uint fixGemPerSkrSettlementPrice_, uint jam) public note auth {
         require(!offStartedLiquidationPhase && fixGemPerSkrSettlementPrice_ != 0);
 
         offStartedLiquidationPhase = true;
+
         axeLiquidationPenality = RAY;
         fixGemPerSkrSettlementPrice = fixGemPerSkrSettlementPrice_;         // ref per skr
+
+        /// #amb -> is possible that some gems could be trapped in the contract due a cage?
         require(gem.transfer(tap, jam));
     }
 

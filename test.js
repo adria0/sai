@@ -1,5 +1,6 @@
 const BigNumber = require("bignumber.js");
 const leftPad = require('left-pad')
+const dateFormat = require('dateformat');
 require('console.table');
 
 const log = v => console.log("------",v,"-------")
@@ -18,7 +19,7 @@ const rayhex2int = v => new BigNumber(v,16).div(RAY).toNumber()
 const inthex2int = v => new BigNumber(v,16).toNumber()
 
 const txevent = (tx,v) => (tx.logs.filter(e=>e.event==v))[0].args
-const txdumplogs = (tx) => (tx.logs.filter(e=>e.event=="Log")).forEach(e=>console.log("LOG:"+e.args.what))
+const txdumplogs = (tx) => (tx.logs.filter(e=>e.event=="Log")).forEach(e=>console.log("LOG:"+e.args.what+"="+e.args.value))
 
 const DSToken  = artifacts.require("./DSToken.sol");
 const DSValue  = artifacts.require("./DSValue.sol");
@@ -100,6 +101,7 @@ module.exports = function(callback) { async function doit()  {
 		let gembalance = wad2int(await gem.balanceOf(acc))
 		let skrbalance = wad2int(await skr.balanceOf(acc))
 		let saibalance = wad2int(await sai.balanceOf(acc))
+		
 		let chi = ray2int(await tub.chi.call())
 		let per = wad2int(await tub.per())
 		let cupid = ""
@@ -117,7 +119,6 @@ module.exports = function(callback) { async function doit()  {
 		snapshots.push(
 			[op,acc.substr(2,7),gembalance,skrbalance,saibalance,globals,cupid,cupink,cuptab]
 		)
-
 	} 
 
 	dumpsnapshots = () => {
@@ -128,28 +129,41 @@ module.exports = function(callback) { async function doit()  {
 		)
 		snapshots = []
 	}
+	
 	await pip.poke(int2wadhex(1))
 
+	console.log("starting era() = "+dateFormat(1000*(await tub.era())))
+	console.log("calling value");
+	console.log("starging chi() = "+ray2int(await tub.chi.call()))
+
 	await snapshot("start",acc1)
-	await gem.mint(acc1,int2wad(100))
+	await gem.mint(acc1,int2wad(200))
 	await snapshot("mint",acc1)
-	await gem.approve(tub.address,int2wad(100) , { from : acc1 })
 
-	await tub.join(int2wad(100), { from : acc1 })
+	await gem.approve(tub.address,int2wad(200) , { from : acc1 })
+	await tub.join(int2wad(200), { from : acc1 })
+	await snapshot("join",acc1)
+
+	// -- open lock & draw cup1
+
 	let tx = await tub.open( { from : acc1 } )
-	let cup = txevent(tx,"LogNewCup").cup
-	await snapshot("join",acc1,cup)
+	let cup1 = txevent(tx,"LogNewCup").cup
+	await snapshot("open",acc1,cup1)
 
-	await skr.approve(tub.address, await skr.balanceOf(acc1) , { from : acc1 })
-	await tub.lock(cup, await skr.balanceOf(acc1), { from : acc1})
-	await snapshot("lock",acc1,cup)
+	await skr.approve(tub.address, int2wad(100) , { from : acc1 })
+	await tub.lock(cup1, int2wad(100), { from : acc1})
+	await snapshot("lock",acc1,cup1)
 
-	await tub.draw(cup, int2wad(1), { from : acc1 })
-	await snapshot("draw",acc1,cup)
+	await tub.draw(cup1, int2wad(1), { from : acc1 })
+	await snapshot("draw",acc1,cup1)
 
-	await timeTravel(3600*24);
-	await snapshot("time",acc1,cup)
+	dumpsnapshots()
 
+	await sai.approve(tub.address,await sai.INFINITE(), {from:acc1})
+	txdumplogs(await tub.shut(cup1, { from : acc1 }))
+	await snapshot("shut",acc1)
+
+/*
 	await skr.approve(tub.address, int2wad(90) , { from : acc1 })
 	await tub.free(cup, int2wad(90), { from : acc1})
 
@@ -158,14 +172,8 @@ module.exports = function(callback) { async function doit()  {
 	await tub.exit(int2wad(90), { from : acc1})
 
 	await snapshot("exit",acc1)
-
+*/
 	dumpsnapshots()
-
-	for (let i=0;i<30;i++) {
-		await snapshot("timetravel",acc1)
-	}
-
-
 
 	callback()
 

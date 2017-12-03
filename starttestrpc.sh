@@ -1,1 +1,1 @@
-testrpc -g 1 -l 0xfffffffffff
+testrpc -g 1 -l 0xfffffffffff -a 512

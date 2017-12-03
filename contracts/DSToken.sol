@@ -23,6 +23,8 @@ import "./DSTokenBase.sol";
 
 contract DSToken is DSTokenBase(0), DSStop {
 
+    uint     public  INFINITE = uint(-1);
+
     bytes32  public  symbol;
     uint256  public  decimals = 18; // standard token precision. override to customize
 
@@ -83,7 +85,6 @@ contract DSToken is DSTokenBase(0), DSStop {
         if (guy != msg.sender && _approvals[guy][msg.sender] != uint(-1)) {
             _approvals[guy][msg.sender] = sub(_approvals[guy][msg.sender], wad);
         }
-
         _balances[guy] = sub(_balances[guy], wad);
         _supply = sub(_supply, wad);
         Burn(guy, wad);

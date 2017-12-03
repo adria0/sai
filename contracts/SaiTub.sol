@@ -17,7 +17,7 @@ contract SaiTubEvents {
 
 contract SaiTub is DSThing, SaiTubEvents {
 
-    event Log(string what);
+    event Log(string what,uint value);
 
     DSToken  public  sai;  // Stablecoin
     DSToken  public  sin;  // Debt (negative sai)
@@ -47,8 +47,8 @@ contract SaiTub is DSThing, SaiTubEvents {
     uint256  public  fit;  // REF per SKR (just before settlement)
 
     uint256  public  rho;  // Time of last drip
-    uint256         _chi;  // Accumulated Tax Rates
-    uint256         _rhi;  // Accumulated Tax + Fee Rates
+    uint256  public  _chi;  // Accumulated Tax Rates
+    uint256  public  _rhi;  // Accumulated Tax + Fee Rates
     uint256  public  rum;  // Total normalised debt
 
     uint256                   public  cupi;
@@ -183,25 +183,19 @@ contract SaiTub is DSThing, SaiTubEvents {
     function drip() public note {
         if (off) return;
 
-        Log("drip1");
-
         var rho_ = era();
         var age = rho_ - rho;
         if (age == 0) return;    // optimised
         rho = rho_;
 
-        Log("drip2");
-
         var inc = RAY;
 
         if (tax != RAY) {  // optimised
-            Log("drip3");
             inc = rpow(tax, age);
             var din_ = din();
             _chi = rmul(_chi, inc);
             sai.mint(tap, sub(din(), din_));
         }
-        Log("drip4");
 
         // optimised
         if (fee != RAY) inc = rmul(inc, rpow(fee, age));
@@ -278,6 +272,7 @@ contract SaiTub is DSThing, SaiTubEvents {
         cups[cup].art = sub(cups[cup].art, rdiv(wad, chi()));
         rum = sub(rum, rdiv(wad, chi()));
         cups[cup].irk = sub(cups[cup].irk, rdiv(add(wad, owe), rhi()));
+        
         sai.burn(msg.sender, wad);
 
         var (val, ok) = pep.peek();
@@ -289,6 +284,7 @@ contract SaiTub is DSThing, SaiTubEvents {
         require(msg.sender == cups[cup].lad);
         if (tab(cup) != 0) wipe(cup, tab(cup));
         if (ink(cup) != 0) free(cup, ink(cup));
+
         delete cups[cup];
     }
 
