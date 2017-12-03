@@ -72,9 +72,9 @@ module.exports = function(deployer) {
 		ray = v => new BigNumber(10).pow(27).mul(v)
 
 		await mom.setHat(wad(10000000))
-		await mom.setMat(ray(1.35))
-		await mom.setAxe(ray(1.15))
-		await mom.setTax(ray(1.00000000031552))
+		await mom.setMat(ray(1.35)) // 1.35
+		await mom.setAxe(ray(1.00))
+		await mom.setTax(ray(1.00))
 		await mom.setTapGap(wad(1.00))
 		await mom.setTubGap(wad(1.00))
 		await mom.setWay(ray(1.0))

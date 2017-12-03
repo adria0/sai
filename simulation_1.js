@@ -29,7 +29,6 @@ const SaiTub  = artifacts.require("./SaiTub.sol");
 const SaiTop  = artifacts.require("./SaiTop.sol");
 const SaiMom  = artifacts.require("./SaiMom.sol");
 
-
 timeTravel = seconds => new Promise((resolve, reject) => {
   web3.currentProvider.sendAsync(
       {
@@ -76,7 +75,6 @@ module.exports = function(callback) { async function doit()  {
 	const top = await SaiTop.deployed()
 	const mom = await SaiMom.deployed()
 
-	const sai = DSToken.at(await tub.sai())
 	const sin = DSToken.at(await tub.sin())
 	const skr = DSToken.at(await tub.skr())
 	const gem = DSToken.at(await tub.gem())
@@ -90,95 +88,102 @@ module.exports = function(callback) { async function doit()  {
         2: acc2,
         3: acc3
     } = web3.eth.accounts;
-
-	let snapshots = [] 
-	snapshot = async (op,acc,cup) => {
-
-		console.log("snapshot",op)
-
-		let gembalance = wad2int(await gem.balanceOf(acc))
-		let skrbalance = wad2int(await skr.balanceOf(acc))
-		let saibalance = wad2int(await sai.balanceOf(acc))
-		
-		let chi = ray2int(await tub.chi.call())
-		let per = wad2int(await tub.per())
-		let cupid = ""
-		let cupink = ""
-		let cuptab = ""
-
-		if (cup !== undefined ) {
-			cupid = inthex2int(cup)	
-			cupink = wad2int(await tub.ink(cup))
-			cuptab = wad2int(await tub.tab.call(cup))
-		}
-
-		let globals = chi + "/" + per
-
-		snapshots.push(
-			[op,acc.substr(2,7),gembalance,skrbalance,saibalance,globals,cupid,cupink,cuptab]
-		)
-	} 
-
-	dumpsnapshots = () => {
-		console.log("ink=skr amount | tab = sia w/o chi-norm ")
-		console.table(
-			['op','acc','gem','skr','sai','chi/per','cup','cupink','cuptab'],
-			snapshots
-		)
-		snapshots = []
-	}
 	
 	/* run ------------------------------------ */
 
 	await pip.poke(int2wadhex(1))
 
-	console.log("starting era() = "+dateFormat(1000*(await tub.era())))
-	console.log("starging chi() = "+ray2int(await tub.chi.call()))
-
 	// init system
-
 
 	var fs = require('fs');
 	var data = JSON.parse(fs.readFileSync('simulation.json', 'utf8'));
 	var lastdate = 0
+	const matLiquidationRatio = ray2int(await tub.mat())
 
 	var cups = []
+	var iterCount = 0
+
 	for (var i = 0; i<data.length; i++) {
 
 		const dateobj = new Date(1000*data[i].date);
-		const date = 10000*dateobj.getFullYear()+100+dateobj.getMonth()+dateobj.getDay()
+		const date = 
+			10000*dateobj.getFullYear()
+			+(100*(1+dateobj.getMonth()))
+			+dateobj.getDate()
+
 		const gemPrice = data[i].weightedAverage
 
-		if (lastdate == date) continue;
+		if (lastdate == date || date < 20170000) continue;
+
+		lastdate = date
+
+		if ( iterCount++ % 10 != 0 ) continue;
 
 		await pip.poke(int2wadhex(gemPrice))
 
-		if (cups.length < web3.eth.accounts.length) {
+		let safeCups = 0
+		let cupInfos = []
+		let totalKilled = 0
+		for (let cupno = 0; cupno<cups.length; cupno++) {
+			const cupid = cups[cupno].id
+			const cupsafe = await tub.safe.call(cupid)
+			if (!cups[cupno].killed && !cupsafe) {
+				cups[cupno].killed = true
+			}
+			
+			cupInfos.push([
+				inthex2int(cupid),
+				cups[cupno].date,
+				cups[cupno].price,
+				await tub.safe.call(cupid),
+				cups[cupno].killed
+			])
+			if (cups[cupno].killed) {
+				totalKilled++;
+			}
+		}
 
-			console.log("New cup @ ",date)
+		cupInfos.push(['total','','','',Math.round(100*totalKilled/cups.length,2)+"%"]);
+
+		console.table(
+			['cupid','date','price','safe','killed'],
+			cupInfos
+		)
+
+		if (cups.length < web3.eth.accounts.length) {
 
 			const acc = web3.eth.accounts[cups.length]
 
-			await gem.mint(acc,int2wad(1000))
-			await gem.approve(tub.address,int2wad(1000) , { from : acc })
-			await tub.join(int2wad(1000), { from : acc })
+			await gem.mint(acc,int2wad(100))
+			await gem.approve(tub.address,int2wad(100) , { from : acc })
+			await tub.join(int2wad(100), { from : acc })
 
 			const tx = await tub.open( { from : acc } )
 			const cup = txevent(tx,"LogNewCup").cup
 
-			cups.push(cups)
+			cups.push( { id:cup, killed:false, price: gemPrice, date:date })
 
-			await skr.approve(tub.address, int2wad(1000) , { from : acc })
-			await tub.lock(cup, int2wad(1000), { from : acc })
+			await skr.approve(tub.address, int2wad(100) , { from : acc })
+			await tub.lock(cup, int2wad(100), { from : acc })
 
-			await tub.draw(cup, int2wad(900), { from : acc })
+			let maxSai = Math.round ( ray2int(await tub.tag()) * 100 * (1/matLiquidationRatio))-1
+			let sai = Math.round ( maxSai * 0.6 )
+			await tub.draw(cup, int2wad(sai), { from : acc })
 
 		}
 
-		lastdate = date
+		// test for mat = 1.35, 33 cups among all the year, one check when another is created
+		// risk (max sai)   killed cups
+		// --------------   ---------------
+		// 100%             45%
+		// 90%              27%
+		// 80%              15%
+		// 70%              9%
+		// 60%              4%		
 
 	}
 
 	callback()
 
-} doit() } 
+} doit() }
+

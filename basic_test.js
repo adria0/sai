@@ -76,6 +76,7 @@ module.exports = function(callback) { async function doit()  {
 	const top = await SaiTop.deployed()
 	const mom = await SaiMom.deployed()
 
+	console.log("aaat-2")
 	const sai = DSToken.at(await tub.sai())
 	const sin = DSToken.at(await tub.sin())
 	const skr = DSToken.at(await tub.skr())
@@ -107,29 +108,32 @@ module.exports = function(callback) { async function doit()  {
 		let cupid = ""
 		let cupink = ""
 		let cuptab = ""
+		let cupsafe = ""
 
 		if (cup !== undefined ) {
 			cupid = inthex2int(cup)	
 			cupink = wad2int(await tub.ink(cup))
 			cuptab = wad2int(await tub.tab.call(cup))
+			cupsafe = wad2int(await tub.safe.call(cup))
 		}
 
 		let globals = chi + "/" + per
 
 		snapshots.push(
-			[op,acc.substr(2,7),gembalance,skrbalance,saibalance,globals,cupid,cupink,cuptab]
+			[op,acc.substr(2,7),gembalance,skrbalance,saibalance,globals,cupid,cupink,cuptab,cupsafe]
 		)
 	} 
 
 	dumpsnapshots = () => {
 		console.log("ink=skr amount | tab = sia w/o chi-norm ")
 		console.table(
-			['op','acc','gem','skr','sai','chi/per','cup','cupink','cuptab'],
+			['op','acc','gem','skr','sai','chi/per','cup','cupink','cuptab','safe'],
 			snapshots
 		)
 		snapshots = []
 	}
 	
+	console.log("aaa")
 	await pip.poke(int2wadhex(1))
 
 	console.log("starting era() = "+dateFormat(1000*(await tub.era())))

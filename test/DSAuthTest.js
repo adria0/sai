@@ -33,13 +33,13 @@ contract("AxeTest", (accounts) => {
 
     dotests = async contract => {
 
-        let gas = 200000000
+        let gas = 2000000000
 
         let hasSetup = false
         let abi
 
         try {
-            abi = (await contract.new( { gas : gas  })).abi
+            abi = (await contract.new( { gas : gas })).abi
         } catch (error) {
             console.log("***FAILED   "+contract.contractName+" Creating instance ",error)
             return

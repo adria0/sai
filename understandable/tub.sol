@@ -55,7 +55,7 @@ contract SaiTub is DSThing, SaiTubEvents {
 
     struct Cup {
         address  lapOwner; // CDP owner
-        uint256  inkSkrCount; // Locked collateral (in SKR)
+        uint256  inkSkrInCup; // Locked collateral (in SKR)
         uint256  artSaiDebtChiNorm;      // OutstandinTotalSaiDebtWithoutNormg normalised debt (tax only)
         uint256  irkSaiDebtRhiNorm;      // OutstandinTotalSaiDebtWithoutNormg normalised debt
     }
@@ -63,8 +63,8 @@ contract SaiTub is DSThing, SaiTubEvents {
     function lapOwner(bytes32 cup) public view returns (address) {
         return cups[cup].lapOwner;
     }
-    function inkSkrCount(bytes32 cup) public view returns (uint) {
-        return cups[cup].inkSkrCount;
+    function inkSkrInCup(bytes32 cup) public view returns (uint) {
+        return cups[cup].inkSkrInCup;
     }
     function tabCupSaiDebtWithoutNorm(bytes32 cup) public returns (uint) {
         return rmul(cups[cup].artSaiDebtChiNorm, chiAccumuTax());
@@ -144,7 +144,7 @@ contract SaiTub is DSThing, SaiTubEvents {
 
     //--Collateral-wrapper----------------------------------------------
 
-    // Wrapper ratio (gem per skr)
+    // Wrapper ratio (gem per skr), usually 1.00
     function perGemPerSkrGlobalRatio() public view returns (uint ray) {
         // per = gem.balanceOf(this) / skr.totalSupply()
         return skr.totalSupply() == 0 ? RAY : rdiv(pieGemsInContract(), skr.totalSupply());
@@ -218,22 +218,25 @@ contract SaiTub is DSThing, SaiTubEvents {
 
     // Returns true if cup is well-collateralized
     function safe(bytes32 cup) public returns (bool) {
-        var pro = rmul(tagDollarsPerSkr(), inkSkrCount(cup));
-        var min = rmul(
-            rmul(voxTargetPriceFeed.parHolderFee(), tabCupSaiDebtWithoutNorm(cup)),
-            matLiquidationRatio
-        );
-        return pro >= min;
+        var dollarsInCup = rmul(tagDollarsPerSkr(), inkSkrInCup(cup));
+        var saisInCup = rmul(voxTargetPriceFeed.parHolderFee(), tabCupSaiDebtWithoutNorm(cup))
+        var minimumSaisInCup = rmul(saisInCup, matLiquidationRatio);
+
+        return dollarsInCup >= minimumSaisInCup;
     }
 
-    tagDollarsPerSkr() *  inkSkrCount(cup)
-    (perGemPerSkrGlobalRatio() * uint(pipDollarsPerGem.read()) * inkSkrCount(cup)
+    tagDollarsPerSkr() *  inkSkrInCup(cup)
+    (perGemPerSkrGlobalRatio() * uint(pipDollarsPerGem.read()) * inkSkrInCup(cup)
     (perGemPerSkrGlobalRatio() * uint(pipDollarsPerGem.read()) * cups[cup].ink
-
+    (gem.balanceOf(this) / skr.totalSupply()) * uint(pipDollarsPerGem.read() * cups[cup].ink
 
     voxTargetPriceFeed.parHolderFee() * tabCupSaiDebtWithoutNorm(cup) * matLiquidationRatio
+    voxTargetPriceFeed.parHolderFee() * cups[cup].artSaiDebtChiNorm * chiAccumuTax() * matLiquidationRatio
 
-    tagDollarsPerSkr() * inkSkrCount(cup) >= 
+    (gem.balanceOf(this) / skr.totalSupply()) * uint(pipDollarsPerGem.read() * cups[cup].ink >= 
+    voxTargetPriceFeed.parHolderFee() * cups[cup].artSaiDebtChiNorm * chiAccumuTax() * matLiquidationRatio  
+
+    tagDollarsPerSkr() * inkSkrInCup(cup) >= 
     voxTargetPriceFeed.parHolderFee() * tabCupSaiDebtWithoutNorm(cup) * matLiquidationRatio
 
 
@@ -256,14 +259,14 @@ contract SaiTub is DSThing, SaiTubEvents {
     function lockSkrsInCup(bytes32 cup, uint skrs) public note {
         require(!offStartedLiquidationPhase);
         require(msg.sender == cups[cup].lapOwner);
-        cups[cup].inkSkrCount = add(cups[cup].inkSkrCount, skrs);
+        cups[cup].inkSkrInCup = add(cups[cup].inkSkrInCup, skrs);
         skr.pull(msg.sender, skrs);
     }
 
 
     function freeUnlockSkrsFromCup(bytes32 cup, uint skrs) public note {
         require(msg.sender == cups[cup].lapOwner);
-        cups[cup].inkSkrCount = sub(cups[cup].inkSkrCount, skrs);
+        cups[cup].inkSkrInCup = sub(cups[cup].inkSkrInCup, skrs);
         skr.push(msg.sender, skrs);
         require(safe(cup));
     }
@@ -319,8 +322,8 @@ contract SaiTub is DSThing, SaiTubEvents {
             wipeReturnSaiDebt(cup, tabCupSaiDebtWithoutNorm(cup));
 
         // send back the skrs to owner
-        if (inkSkrCount(cup) != 0)
-            freeUnlockSkrsFromCup(cup, inkSkrCount(cup));
+        if (inkSkrInCup(cup) != 0)
+            freeUnlockSkrsFromCup(cup, inkSkrInCup(cup));
 
         delete cups[cup];
     }
@@ -348,13 +351,13 @@ contract SaiTub is DSThing, SaiTubEvents {
             tagDollarsPerSkr()
         );
 
-        if (owed > cups[cup].inkSkrCount) {
-            owed = cups[cup].inkSkrCount;
+        if (owed > cups[cup].inkSkrInCup) {
+            owed = cups[cup].inkSkrInCup;
         }
 
         // transfer SKRs to TAP
         skr.push(tap, owed);
-        cups[cup].inkSkrCount = sub(cups[cup].inkSkrCount, owed);
+        cups[cup].inkSkrInCup = sub(cups[cup].inkSkrInCup, owed);
     }
 
     // only can be executed by top contract
