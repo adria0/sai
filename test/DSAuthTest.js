@@ -3,6 +3,22 @@
 /* global web3 */
 /* global assert */
 
+/*
+
+You need to change something in libraries to work, in
+
+  /usr/local/lib/node_modules/truffle/build/cli.bundled.js:317993
+
+change
+
+  if (totalGas.cmp(gasLimit) <= 0 && results.return.length <= 24576)
+
+to 
+
+  if (totalGas.cmp(gasLimit) <= 0)
+
+*/
+
 const assertFail = require("./helpers/assertFail.js");
 
 const AxeTest  = artifacts.require("../AxeTest.sol");

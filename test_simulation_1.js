@@ -29,7 +29,6 @@ const SaiTub  = artifacts.require("./SaiTub.sol");
 const SaiTop  = artifacts.require("./SaiTop.sol");
 const SaiMom  = artifacts.require("./SaiMom.sol");
 
-
 timeTravel = seconds => new Promise((resolve, reject) => {
   web3.currentProvider.sendAsync(
       {
@@ -55,17 +54,6 @@ timeTravel = seconds => new Promise((resolve, reject) => {
   }
 )});
 
-/*
-
-Note: patch 
-// We have BN. Convert it to BigNumber
-if (val && val.constructor.isBN) {
-copy.args[key] = C.web3.toBigNumber("0x" + val.toString(16));
-}
-
-in /usr/local/lib/node_modules/truffle/build/cli.bundled.js:317993
-*/
-
 module.exports = function(callback) { async function doit()  {
 
 	/* init ------------------------------------ */
@@ -76,7 +64,6 @@ module.exports = function(callback) { async function doit()  {
 	const top = await SaiTop.deployed()
 	const mom = await SaiMom.deployed()
 
-	const sai = DSToken.at(await tub.sai())
 	const sin = DSToken.at(await tub.sin())
 	const skr = DSToken.at(await tub.skr())
 	const gem = DSToken.at(await tub.gem())
@@ -90,91 +77,106 @@ module.exports = function(callback) { async function doit()  {
         2: acc2,
         3: acc3
     } = web3.eth.accounts;
-
+	
 	/* run ------------------------------------ */
 
-	let snapshots = [] 
-	snapshot = async (op,acc,cup) => {
-
-		console.log("snapshot",op)
-
-		let gembalance = wad2int(await gem.balanceOf(acc))
-		let skrbalance = wad2int(await skr.balanceOf(acc))
-		let saibalance = wad2int(await sai.balanceOf(acc))
-		
-		let chi = ray2int(await tub.chi.call())
-		let per = wad2int(await tub.per())
-		let cupid = ""
-		let cupink = ""
-		let cuptab = ""
-
-		if (cup !== undefined ) {
-			cupid = inthex2int(cup)	
-			cupink = wad2int(await tub.ink(cup))
-			cuptab = wad2int(await tub.tab.call(cup))
-		}
-
-		let globals = chi + "/" + per
-
-		snapshots.push(
-			[op,acc.substr(2,7),gembalance,skrbalance,saibalance,globals,cupid,cupink,cuptab]
-		)
-	} 
-
-	dumpsnapshots = () => {
-		console.log("ink=skr amount | tab = sia w/o chi-norm ")
-		console.table(
-			['op','acc','gem','skr','sai','chi/per','cup','cupink','cuptab'],
-			snapshots
-		)
-		snapshots = []
-	}
-	
 	await pip.poke(int2wadhex(1))
 
-	console.log("starting era() = "+dateFormat(1000*(await tub.era())))
-	console.log("calling value");
-	console.log("starging chi() = "+ray2int(await tub.chi.call()))
+	// init system
 
-	await snapshot("start",acc1)
-	await gem.mint(acc1,int2wad(200))
-	await snapshot("mint",acc1)
+	var fs = require('fs');
+	var data = JSON.parse(fs.readFileSync('test_simulation_1.json', 'utf8'));
+	var lastdate = 0
+	const matLiquidationRatio = ray2int(await tub.mat())
 
-	await gem.approve(tub.address,int2wad(200) , { from : acc1 })
-	await tub.join(int2wad(200), { from : acc1 })
-	await snapshot("join",acc1)
+	var cups = []
+	var iterCount = 0
 
-	// -- open lock & draw cup1
+	for (var i = 0; i<data.length; i++) {
 
-	let tx = await tub.open( { from : acc1 } )
-	let cup1 = txevent(tx,"LogNewCup").cup
-	await snapshot("open",acc1,cup1)
+		const dateobj = new Date(1000*data[i].date);
+		const date = 
+			 (100000000*dateobj.getFullYear())
+			+(1000000*(1+dateobj.getMonth()))
+			+(10000*dateobj.getDate())
+			+(100*dateobj.getHours())
+			+dateobj.getMinutes()
 
-	await skr.approve(tub.address, int2wad(100) , { from : acc1 })
-	await tub.lock(cup1, int2wad(100), { from : acc1})
-	await snapshot("lock",acc1,cup1)
+		const gemPrice = data[i].weightedAverage
 
-	await tub.draw(cup1, int2wad(1), { from : acc1 })
-	await snapshot("draw",acc1,cup1)
 
-	dumpsnapshots()
+		if (date < 201700000000) continue;
+//		if (lastdate == date || date < 20170000) continue;
+//		lastdate = date
 
-	await sai.approve(tub.address,await sai.INFINITE(), {from:acc1})
-	txdumplogs(await tub.shut(cup1, { from : acc1 }))
-	await snapshot("shut",acc1)
+		await pip.poke(int2wadhex(gemPrice))
 
-/*
-	await skr.approve(tub.address, int2wad(90) , { from : acc1 })
-	await tub.free(cup, int2wad(90), { from : acc1})
+		process.stdout.write("*")
+		
+		for (let cupno = 0; cupno<cups.length; cupno++) {
+			if (cups[cupno].killed=="") {
+				const cupid = cups[cupno].id
+				const cupsafe = await tub.safe.call(cupid)
+				if (!cupsafe) {
+					cups[cupno].killed = date +" "+gemPrice
+					process.stdout.write("K")
+				}
+			}
+		}
 
-	await snapshot("free",acc1,cup)
+		if ( (iterCount++ % (Math.floor(data.length/33))) != 0 ) continue;
 
-	await tub.exit(int2wad(90), { from : acc1})
+		process.stdout.write("\n")
 
-	await snapshot("exit",acc1)
-*/
-	dumpsnapshots()
+		let safeCups = 0
+		let cupInfos = []
+		let totalKilled = 0
+		for (let cupno = 0; cupno<cups.length; cupno++) {
+			const cupid = cups[cupno].id
+			cupInfos.push([
+				inthex2int(cupid),
+				cups[cupno].date,
+				cups[cupno].price,
+				cups[cupno].killed
+			])
+			if (cups[cupno].killed!="") {
+				totalKilled++;
+			}
+		}
+
+		cupInfos.push(['total','','',Math.round(100*totalKilled/cups.length,2)+"%"]);
+
+		console.table(
+			['cupid','date','price','killed'],
+			cupInfos
+		)
+
+		if (cups.length < web3.eth.accounts.length) {
+
+			const acc = web3.eth.accounts[cups.length]
+
+			await gem.mint(acc,int2wad(100))
+			await gem.approve(tub.address,int2wad(100) , { from : acc })
+			await tub.join(int2wad(100), { from : acc })
+
+			const tx = await tub.open( { from : acc } )
+
+			const cup = txevent(tx,"LogNewCup").cup
+
+			cups.push( { id:cup, killed:"", price: gemPrice, date:date })
+
+			await skr.approve(tub.address, int2wad(100) , { from : acc })
+			await tub.lock(cup, int2wad(100), { from : acc })
+
+			let maxSai = Math.round ( ray2int(await tub.tag()) * 100 * (1/matLiquidationRatio))-1
+			let sai = Math.round ( maxSai * 0.6 )
+			await tub.draw(cup, int2wad(sai), { from : acc })
+
+		}
+
+	}
 
 	callback()
 
-} doit() } 
+} doit() }
+
