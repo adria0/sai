@@ -3,8 +3,6 @@ const leftPad = require('left-pad')
 const dateFormat = require('dateformat');
 require('console.table');
 
-const log = v => console.log("------",v,"-------")
-
 const WAD = new BigNumber(10).pow(18)
 const RAY = new BigNumber(10).pow(27)
 
@@ -21,38 +19,21 @@ const inthex2int = v => new BigNumber(v,16).toNumber()
 const txevent = (tx,v) => (tx.logs.filter(e=>e.event==v))[0].args
 const txdumplogs = (tx) => (tx.logs.filter(e=>e.event=="Log")).forEach(e=>console.log("LOG:"+e.args.what+"="+e.args.value))
 
-const DSToken  = artifacts.require("./DSToken.sol");
-const DSValue  = artifacts.require("./DSValue.sol");
-const SaiVox  = artifacts.require("./SaiVox.sol");
-const SaiTap  = artifacts.require("./SaiTap.sol");
-const SaiTub  = artifacts.require("./SaiTub.sol");
-const SaiTop  = artifacts.require("./SaiTop.sol");
-const SaiMom  = artifacts.require("./SaiMom.sol");
+const DSToken = artifacts.require("./DSToken.sol");
+const DSValue = artifacts.require("./DSValue.sol");
+const SaiVox = artifacts.require("./SaiVox.sol");
+const SaiTap = artifacts.require("./SaiTap.sol");
+const SaiTub = artifacts.require("./SaiTub.sol");
+const SaiTop = artifacts.require("./SaiTop.sol");
+const SaiMom = artifacts.require("./SaiMom.sol");
 
-timeTravel = seconds => new Promise((resolve, reject) => {
-  web3.currentProvider.sendAsync(
-      {
-          jsonrpc: "2.0",
-          method: "evm_increaseTime",
-          params: [ seconds ],
-          id: new Date().getTime(),
-      },
-  (err1) => {
-      if (err1) return reject(err1);
-      web3.currentProvider.sendAsync(
-          {
-              jsonrpc: "2.0",
-              method: "evm_mine",
-              params: [],
-              id: new Date().getTime(),
-          },
-      (err2) => {
-          if (err2) return reject(err2);
-          resolve();
-      }
-    );
-  }
-)});
+const MAX_CUPS = 20
+const AMOUNT = 100
+const MAT_LIQUIDATION_RATIO = 1.35
+
+const SAI_RISK = 2.0
+const STEPS = 1
+const FILE = 'test_simulation_1.csv'
 
 module.exports = function(callback) { async function doit()  {
 
@@ -80,34 +61,23 @@ module.exports = function(callback) { async function doit()  {
 	
 	/* run ------------------------------------ */
 
+	await mom.setMat(int2ray(MAT_LIQUIDATION_RATIO))
 	await pip.poke(int2wadhex(1))
 
 	// init system
-
 	var fs = require('fs');
-	var data = JSON.parse(fs.readFileSync('test_simulation_1.json', 'utf8'));
-	var lastdate = 0
-	const matLiquidationRatio = ray2int(await tub.mat())
+	var data = fs
+		.readFileSync(FILE, 'utf8')
+		.split("\n")
+		.map(x=>x.split(","));
 
 	var cups = []
-	var iterCount = 0
+	let lastCheck = -data.length
 
-	for (var i = 0; i<data.length; i++) {
+	for (var i = 0; i<data.length; i+=STEPS) {
 
-		const dateobj = new Date(1000*data[i].date);
-		const date = 
-			 (100000000*dateobj.getFullYear())
-			+(1000000*(1+dateobj.getMonth()))
-			+(10000*dateobj.getDate())
-			+(100*dateobj.getHours())
-			+dateobj.getMinutes()
-
-		const gemPrice = data[i].weightedAverage
-
-
-		if (date < 201700000000) continue;
-//		if (lastdate == date || date < 20170000) continue;
-//		lastdate = date
+		const date = data[i][0]
+		const gemPrice = parseFloat(data[i][1])
 
 		await pip.poke(int2wadhex(gemPrice))
 
@@ -124,9 +94,39 @@ module.exports = function(callback) { async function doit()  {
 			}
 		}
 
-		if ( (iterCount++ % (Math.floor(data.length/33))) != 0 ) continue;
+		if ( (i - lastCheck) < (data.length/MAX_CUPS) ) continue;
+
+		lastCheck = i
 
 		process.stdout.write("\n")
+		console.log("Pending count=",data.length-i)
+
+		/// --- create cup
+
+		if (cups.length < MAX_CUPS) {
+
+			const acc = web3.eth.accounts[cups.length]
+
+			await gem.mint(acc,int2wad(AMOUNT))
+			await gem.approve(tub.address,int2wad(AMOUNT) , { from : acc })
+			await tub.join(int2wad(AMOUNT), { from : acc })
+
+			const tx = await tub.open( { from : acc } )
+
+			const cup = txevent(tx,"LogNewCup").cup
+
+			cups.push( { id:cup, killed:"", price: gemPrice, date:date })
+
+			await skr.approve(tub.address, int2wad(AMOUNT) , { from : acc })
+			await tub.lock(cup, int2wad(AMOUNT), { from : acc })
+
+			let sai = Math.round ( ray2int(await tub.tag()) * AMOUNT * (1/SAI_RISK))
+
+			await tub.draw(cup, int2wad(sai), { from : acc })
+
+		}
+
+		/// --- dump cup contents
 
 		let safeCups = 0
 		let cupInfos = []
@@ -150,29 +150,6 @@ module.exports = function(callback) { async function doit()  {
 			['cupid','date','price','killed'],
 			cupInfos
 		)
-
-		if (cups.length < web3.eth.accounts.length) {
-
-			const acc = web3.eth.accounts[cups.length]
-
-			await gem.mint(acc,int2wad(100))
-			await gem.approve(tub.address,int2wad(100) , { from : acc })
-			await tub.join(int2wad(100), { from : acc })
-
-			const tx = await tub.open( { from : acc } )
-
-			const cup = txevent(tx,"LogNewCup").cup
-
-			cups.push( { id:cup, killed:"", price: gemPrice, date:date })
-
-			await skr.approve(tub.address, int2wad(100) , { from : acc })
-			await tub.lock(cup, int2wad(100), { from : acc })
-
-			let maxSai = Math.round ( ray2int(await tub.tag()) * 100 * (1/matLiquidationRatio))-1
-			let sai = Math.round ( maxSai * 0.6 )
-			await tub.draw(cup, int2wad(sai), { from : acc })
-
-		}
 
 	}
 
