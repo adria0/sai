@@ -31,9 +31,9 @@ const MAX_CUPS = 20
 const AMOUNT = 100
 const MAT_LIQUIDATION_RATIO = 1.35
 
-const SAI_RISK = 2.0
+const SAI_RISK = 2.2
 const STEPS = 1
-const FILE = 'test_simulation_1.csv'
+const FILE = 'test_simulation_2017.csv'
 
 module.exports = function(callback) { async function doit()  {
 
