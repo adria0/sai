@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for contracts/SaiMom.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">contracts/</a> SaiMom.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>20/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">60% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>12/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>9/9</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>25/25</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">73×</span>
+<span class="cline-any cline-yes">73×</span>
+<span class="cline-any cline-yes">73×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">131×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">44×</span>
+<span class="cline-any cline-yes">44×</span>
+<span class="cline-any cline-yes">44×</span>
+<span class="cline-any cline-yes">44×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/// mom.sol -- admin manager
+&nbsp;
+// Copyright (C) 2017  Nikolai Mushegian &lt;nikolai@dapphub.com&gt;
+// Copyright (C) 2017  Daniel Brockman &lt;daniel@dapphub.com&gt;
+// Copyright (C) 2017  Rain &lt;rainbreak@riseup.net&gt;
+&nbsp;
+pragma solidity ^0.4.15;
+&nbsp;
+import './DSThing.sol';
+import './SaiTub.sol';
+import './SaiTop.sol';
+import './SaiTap.sol';
+&nbsp;
+contract SaiMom is DSThing {
+    SaiTub  public  tub;
+    SaiTap  public  tap;
+    SaiVox  public  vox;
+&nbsp;
+    function SaiMom(SaiTub tub_, SaiTap tap_, SaiVox vox_) public {
+        tub = tub_;
+        tap = tap_;
+        vox = vox_;
+    }
+    // Debt ceiling
+    function setHat(uint wad) public note auth {
+        tub.mold("hat", wad);
+    }
+    // Liquidation ratio
+    function setMat(uint ray) public note auth {
+        tub.mold("mat", ray);
+        var axe = tub.axe();
+        var mat = tub.mat();
+        require(axe &gt;= RAY &amp;&amp; axe &lt;= mat);
+    }
+    // Stability fee
+    function setTax(uint ray) public note auth {
+        tub.mold("tax", ray);
+        var tax = tub.tax();
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(RAY &lt;= tax);
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(tax &lt; 10002 * 10 ** 23);  // ~200% per hour
+    }
+    // Governance fee
+    function setFee(uint ray) public note auth {
+        tub.mold("fee", ray);
+        var fee = tub.fee();
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(RAY &lt;= fee);
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(fee &lt; 10002 * 10 ** 23);  // ~200% per hour
+    }
+    // Liquidation fee
+    function setAxe(uint ray) public note auth {
+        tub.mold("axe", ray);
+        var axe = tub.axe();
+        var mat = tub.mat();
+        require(axe &gt;= RAY &amp;&amp; axe &lt;= mat);
+    }
+    // Join/Exit Spread
+    function setTubGap(uint wad) public note auth {
+        tub.mold("gap", wad);
+    }
+    // Boom/Bust Spread
+    function setTapGap(uint wad) public note auth {
+        tap.mold("gap", wad);
+        var gap = tap.gap();
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(gap &lt;= 1.05 ether);
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(gap &gt;= 0.95 ether);
+    }
+    // Rate of change of target price (per second)
+    function setWay(uint ray) public note auth {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(ray &lt; 10002 * 10 ** 23);  // ~200% per hour
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(ray &gt; 9998 * 10 ** 23);
+        vox.mold("way", ray);
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Dec 08 2017 22:05:50 GMT+0100 (CET)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

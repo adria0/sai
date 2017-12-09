@@ -13,7 +13,14 @@ module.exports = {
       network_id: '*', // Match any network id
       gasPrice : 1,
       gas : 0xfffffffffff
-    }
+    },
+    coverage: {
+      host: 'localhost',
+      port: 8555,
+      network_id: '*', // Match any network id
+      gasPrice : 1,
+      gas : 0xfffffffffff
+    }    
   }
 }
 

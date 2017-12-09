@@ -5,17 +5,25 @@
 
 /*
 
-You need to change something in libraries to work, in
+You need to change something in libraries to work
 
-  /usr/local/lib/node_modules/truffle/build/cli.bundled.js:317993
-
+in
+    /usr/local/lib/node_modules/truffle/build/cli.bundled.js:317993
 change
-
-  if (totalGas.cmp(gasLimit) <= 0 && results.return.length <= 24576)
-
+    if (totalGas.cmp(gasLimit) <= 0 && results.return.length <= 24576)
 to 
+    if (totalGas.cmp(gasLimit) <= 0)
 
-  if (totalGas.cmp(gasLimit) <= 0)
+
+
+in
+    /usr/local/lib/node_modules/truffle/build/cli.bundled.js:71294
+change
+    totalGas = totalGas.addn(returnFee)
+to
+    totalGas = totalGas.add(new BN(returnFee))
+
+
 
 */
 
@@ -28,6 +36,7 @@ const DSGuardTest = artifacts.require("../DSGuardTest.sol");
 const DSMathTest  = artifacts.require("../DSMathTest.sol");
 const DSNoteTest = artifacts.require("../DSNoteTest.sol");
 const DSStopTest = artifacts.require("../DSStopTest.sol");
+const DSTokenBaseTest = artifacts.require("../DSTokenBaseTest.sol");
 const DSTokenTest = artifacts.require("../DSTokenTest.sol");
 const DSValueTest = artifacts.require("../DSValueTest.sol");
 const FeeTest = artifacts.require("../FeeTest.sol");
@@ -110,6 +119,7 @@ contract("AxeTest", (accounts) => {
     it("DSGuardTest", async () => { await dotests(DSGuardTest) })
     it("DSMathTest", async () => { await dotests(DSMathTest) })
     it("DSTokenTest", async () => { await dotests(DSTokenTest) })
+    it("DSTokenBaseTest", async () => { await dotests(DSTokenBaseTest) })
     it("DSValueTest", async () => { await dotests(DSValueTest) })
     it("FeeTest", async () => { await dotests(FeeTest) })
     it("GasTest", async () => { await dotests(GasTest) })

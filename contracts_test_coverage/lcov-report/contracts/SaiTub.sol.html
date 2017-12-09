@@ -1,0 +1,1028 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for contracts/SaiTub.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">contracts/</a> SaiTub.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">93.85% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>122/130</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">68.75% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>55/80</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">93.33% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>28/30</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">93.1% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>108/116</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">189×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">235×</span>
+<span class="cline-any cline-yes">235×</span>
+<span class="cline-any cline-yes">235×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">225×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">285×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">100×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">98×</span>
+<span class="cline-any cline-yes">98×</span>
+<span class="cline-any cline-yes">98×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">421×</span>
+<span class="cline-any cline-yes">421×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">113×</span>
+<span class="cline-any cline-yes">113×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">578×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">499×</span>
+<span class="cline-any cline-yes">499×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">182×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">135×</span>
+<span class="cline-any cline-yes">135×</span>
+<span class="cline-any cline-yes">135×</span>
+<span class="cline-any cline-yes">135×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">78×</span>
+<span class="cline-any cline-yes">78×</span>
+<span class="cline-any cline-yes">78×</span>
+<span class="cline-any cline-yes">78×</span>
+<span class="cline-any cline-yes">78×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">79×</span>
+<span class="cline-any cline-yes">79×</span>
+<span class="cline-any cline-yes">79×</span>
+<span class="cline-any cline-yes">79×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-yes">69×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/// tub.sol -- simplified CDP engine (baby brother of `vat')
+&nbsp;
+// Copyright (C) 2017  Nikolai Mushegian &lt;nikolai@dapphub.com&gt;
+// Copyright (C) 2017  Daniel Brockman &lt;daniel@dapphub.com&gt;
+// Copyright (C) 2017  Rain &lt;rainbreak@riseup.net&gt;
+&nbsp;
+pragma solidity ^0.4.15;
+&nbsp;
+import "./DSThing.sol";
+import "./DSToken.sol";
+import "./DSValue.sol";
+import "./SaiVox.sol";
+&nbsp;
+contract SaiTubEvents {
+    event LogNewCup(address indexed lad, bytes32 cup);
+}
+&nbsp;
+contract SaiTub is DSThing, SaiTubEvents {
+    DSToken  public  sai;  // Stablecoin
+    DSToken  public  sin;  // Debt (negative sai)
+&nbsp;
+    DSToken  public  skr;  // Abstracted collateral
+    ERC20    public  gem;  // Underlying collateral
+&nbsp;
+    DSToken  public  gov;  // Governance token
+&nbsp;
+    SaiVox   public  vox;  // Target price feed
+    DSValue  public  pip;  // Reference price feed
+    DSValue  public  pep;  // Governance price feed
+&nbsp;
+    address  public  tap;  // Liquidator
+    address  public  pit;  // Governance Vault
+&nbsp;
+    uint256  public  axe;  // Liquidation penalty
+    uint256  public  hat;  // Debt ceiling
+    uint256  public  mat;  // Liquidation ratio
+    uint256  public  tax;  // Stability fee
+    uint256  public  fee;  // Governance fee
+    uint256  public  gap;  // Join-Exit Spread
+&nbsp;
+    bool     public  off;  // Cage flag
+    bool     public  out;  // Post cage exit
+&nbsp;
+    uint256  public  fit;  // REF per SKR (just before settlement)
+&nbsp;
+    uint256  public  rho;  // Time of last drip
+    uint256         _chi;  // Accumulated Tax Rates
+    uint256         _rhi;  // Accumulated Tax + Fee Rates
+    uint256  public  rum;  // Total normalised debt
+&nbsp;
+    uint256                   public  cupi;
+    mapping (bytes32 =&gt; Cup)  public  cups;
+&nbsp;
+    struct Cup {
+        address  lad;      // CDP owner
+        uint256  ink;      // Locked collateral (in SKR)
+        uint256  art;      // Outstanding normalised debt (tax only)
+        uint256  irk;      // Outstanding normalised debt
+    }
+&nbsp;
+    event Log(uint256 v);
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function lad(bytes32 cup) public view returns (address</span>) {
+<span class="cstat-no" title="statement not covered" >        return cups[cup].lad;</span>
+    }
+    function ink(bytes32 cup) public view returns (uint) {
+        return cups[cup].ink;
+    }
+    function tab(bytes32 cup) public returns (uint) {
+        uint v = rmul(cups[cup].art, chi());
+        Log(v);
+        return v;
+    }
+&nbsp;
+    function rap(bytes32 cup) public returns (uint) {
+        uint v = sub(rmul(cups[cup].irk, rhi()), tab(cup));
+        Log(v);
+        return v;
+    }
+&nbsp;
+    // Total CDP Debt
+    function din() public returns (uint) {
+        return rmul(rum, chi());
+    }
+    // Backing collateral
+    function air() public view returns (uint) {
+        return skr.balanceOf(this);
+    }
+    // Raw collateral
+    function pie() public view returns (uint) {
+        return gem.balanceOf(this);
+    }
+&nbsp;
+    //------------------------------------------------------------------
+&nbsp;
+    function SaiTub(
+        DSToken  sai_,
+        DSToken  sin_,
+        DSToken  skr_,
+        ERC20    gem_,
+        DSToken  gov_,
+        DSValue  pip_,
+        DSValue  pep_,
+        SaiVox   vox_,
+        address  tap_,
+        address  pit_
+    ) public {
+        gem = gem_;
+        skr = skr_;
+&nbsp;
+        sai = sai_;
+        sin = sin_;
+&nbsp;
+        gov = gov_;
+        pit = pit_;
+&nbsp;
+        pip = pip_;
+        pep = pep_;
+        vox = vox_;
+        tap = tap_;
+&nbsp;
+        axe = RAY;
+        mat = RAY;
+        tax = RAY;
+        fee = RAY;
+        gap = WAD;
+&nbsp;
+        _chi = RAY;
+        _rhi = RAY;
+&nbsp;
+        rho = era();
+    }
+&nbsp;
+    function era() public constant returns (uint) {
+        return block.timestamp;
+    }
+&nbsp;
+    //--Risk-parameter-config-------------------------------------------
+&nbsp;
+    function mold(bytes32 param, uint val) public note auth  {
+        if      (param == 'hat') hat = val;
+        else if (param == 'mat') mat = val;
+        else if (param == 'tax') { <span class="missing-if-branch" title="else path not taken" >E</span>require(val &gt;= RAY); drip(); tax = val; }
+        else if (param == 'fee') { <span class="missing-if-branch" title="else path not taken" >E</span>require(val &gt;= RAY); drip(); fee = val; }
+        else if (param == 'axe') axe = val;
+        else <span class="missing-if-branch" title="else path not taken" >E</span>if (param == 'gap') gap = val;
+        else <span class="cstat-no" title="statement not covered" >return;</span>
+    }
+&nbsp;
+    //--Collateral-wrapper----------------------------------------------
+&nbsp;
+    // Wrapper ratio (gem per skr)
+    function per() public view returns (uint ray) {
+        return skr.totalSupply() == 0 ? RAY : rdiv(pie(), skr.totalSupply());
+    }
+    // Join price (gem per skr)
+    function ask(uint wad) public view returns (uint) {
+        return rmul(wad, wmul(per(), gap));
+    }
+    // Exit price (gem per skr)
+    function bid(uint wad) public view returns (uint) {
+        return rmul(wad, wmul(per(), sub(2 * WAD, gap)));
+    }
+    function join(uint wad) public note {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(!off);
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(gem.transferFrom(msg.sender, this, ask(wad)));
+        skr.mint(msg.sender, wad);
+    }
+    function exit(uint wad) public note {
+        require(!off || out);
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(gem.transfer(msg.sender, bid(wad)));
+        skr.burn(msg.sender, wad);
+    }
+&nbsp;
+    //--Stability-fee-accumulation--------------------------------------
+&nbsp;
+    // Accumulated Rates
+    function chi() public returns (uint) {
+        drip();
+        return _chi;
+    }
+    function rhi() public returns (uint) {
+        drip();
+        return _rhi;
+    }
+    function drip() public note {
+        if (off) return;
+&nbsp;
+        var rho_ = era();
+        var age = rho_ - rho;
+        if (age == 0) return;    // optimised
+        rho = rho_;
+&nbsp;
+        var inc = RAY;
+&nbsp;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (tax != RAY) {  // optimised
+<span class="cstat-no" title="statement not covered" >            inc = rpow(tax, age)</span>;
+<span class="cstat-no" title="statement not covered" >            var din_ = din();</span>
+<span class="cstat-no" title="statement not covered" >            _chi = rmul(_chi, inc)</span>;
+            sai.mint(tap, sub(din(), din_));
+        }
+&nbsp;
+        // optimised
+        if (fee != RAY) inc = rmul(inc, rpow(fee, age));
+        if (inc != RAY) _rhi = rmul(_rhi, inc);
+    }
+&nbsp;
+&nbsp;
+    //--CDP-risk-indicator----------------------------------------------
+&nbsp;
+    // Abstracted collateral price (ref per skr)
+    function tag() public view returns (uint wad) {
+        return off ? fit : wmul(per(), uint(pip.read()));
+    }
+    // Returns true if cup is well-collateralized
+    function safe(bytes32 cup) public returns (bool) {
+        var pro = rmul(tag(), ink(cup));
+        var con = rmul(vox.par(), tab(cup));
+        var min = rmul(con, mat);
+        return pro &gt;= min;
+    }
+&nbsp;
+&nbsp;
+    //--CDP-operations--------------------------------------------------
+&nbsp;
+    function open() public note returns (bytes32 cup) {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(!off);
+        cupi = add(cupi, 1);
+        cup = bytes32(cupi);
+        cups[cup].lad = msg.sender;
+        LogNewCup(msg.sender, cup);
+    }
+<span class="fstat-no" title="function not covered" >    function give(bytes32 cup, address guy) public not</span>e {
+<span class="cstat-no" title="statement not covered" >        require(msg.sender == cups[cup].lad)</span>;
+<span class="cstat-no" title="statement not covered" >        require(guy != 0)</span>;
+<span class="cstat-no" title="statement not covered" >        cups[cup].lad = guy</span>;
+    }
+&nbsp;
+    function lock(bytes32 cup, uint wad) public note {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(!off);
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(msg.sender == cups[cup].lad);
+        cups[cup].ink = add(cups[cup].ink, wad);
+        skr.pull(msg.sender, wad);
+    }
+    function free(bytes32 cup, uint wad) public note {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(msg.sender == cups[cup].lad);
+        cups[cup].ink = sub(cups[cup].ink, wad);
+        skr.push(msg.sender, wad);
+        require(safe(cup));
+    }
+&nbsp;
+    function draw(bytes32 cup, uint wad) public note {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(!off);
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(msg.sender == cups[cup].lad);
+&nbsp;
+        cups[cup].art = add(cups[cup].art, rdiv(wad, chi()));
+        rum = add(rum, rdiv(wad, chi()));
+        cups[cup].irk = add(cups[cup].irk, rdiv(wad, rhi()));
+        sai.mint(cups[cup].lad, wad);
+&nbsp;
+        require(safe(cup));
+        require(sai.totalSupply() &lt;= hat);
+    }
+    function wipe(bytes32 cup, uint wad) public note {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(!off);
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(msg.sender == cups[cup].lad);
+&nbsp;
+        var owe = rmul(wad, rdiv(rap(cup), tab(cup)));
+&nbsp;
+        cups[cup].art = sub(cups[cup].art, rdiv(wad, chi()));
+        rum = sub(rum, rdiv(wad, chi()));
+        cups[cup].irk = sub(cups[cup].irk, rdiv(add(wad, owe), rhi()));
+        sai.burn(msg.sender, wad);
+&nbsp;
+        var (val, ok) = pep.peek();
+        if (ok &amp;&amp; val != 0) gov.move(msg.sender, pit, wdiv(owe, uint(val)));
+    }
+&nbsp;
+    function shut(bytes32 cup) public note {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(!off);
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(msg.sender == cups[cup].lad);
+        if (tab(cup) != 0) wipe(cup, tab(cup));
+        if (ink(cup) != 0) free(cup, ink(cup));
+        delete cups[cup];
+    }
+&nbsp;
+    function bite(bytes32 cup) public note {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(!safe(cup) || off);
+&nbsp;
+        // Take on all of the debt, except unpaid fees
+        var rue = tab(cup);
+        sin.mint(tap, rue);
+        rum = sub(rum, cups[cup].art);
+        cups[cup].art = 0;
+        cups[cup].irk = 0;
+&nbsp;
+        // Amount owed in SKR, including liquidation penalty
+        var owe = rdiv(rmul(rmul(rue, axe), vox.par()), tag());
+&nbsp;
+        if (owe &gt; cups[cup].ink) {
+            owe = cups[cup].ink;
+        }
+&nbsp;
+        skr.push(tap, owe);
+        cups[cup].ink = sub(cups[cup].ink, owe);
+    }
+&nbsp;
+    //------------------------------------------------------------------
+&nbsp;
+    function cage(uint fit_, uint jam) public note auth {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(!off &amp;&amp; fit_ != 0);
+        off = true;
+        axe = RAY;
+        fit = fit_;         // ref per skr
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(gem.transfer(tap, jam));
+    }
+    function flow() public note auth {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(off);
+        out = true;
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Dec 08 2017 22:05:50 GMT+0100 (CET)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

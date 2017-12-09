@@ -133,19 +133,14 @@ module.exports = function(callback) { async function doit()  {
 		snapshots = []
 	}
 	
-	console.log("aaa")
-	await pip.poke(int2wadhex(1))
-
-	console.log("starting era() = "+dateFormat(1000*(await tub.era())))
-	console.log("calling value");
-	console.log("starging chi() = "+ray2int(await tub.chi.call()))
+	await pip.poke(int2wadhex(400))
 
 	await snapshot("start",acc1)
-	await gem.mint(acc1,int2wad(200))
+	await gem.mint(acc1,int2wad(1000000))
 	await snapshot("mint",acc1)
 
-	await gem.approve(tub.address,int2wad(200) , { from : acc1 })
-	await tub.join(int2wad(200), { from : acc1 })
+	await gem.approve(tub.address,int2wad(1000000) , { from : acc1 })
+	await tub.join(int2wad(1000000), { from : acc1 })
 	await snapshot("join",acc1)
 
 	// -- open lock & draw cup1

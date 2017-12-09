@@ -31,7 +31,7 @@ const MAX_CUPS = 20
 const AMOUNT = 100
 const MAT_LIQUIDATION_RATIO = 1.35
 
-const SAI_RISK = 2.2
+const SAI_RISK = 2.4
 const STEPS = 1
 const FILE = 'test_simulation_2017.csv'
 
