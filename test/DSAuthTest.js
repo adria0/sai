@@ -30,21 +30,19 @@ to
 const assertFail = require("./helpers/assertFail.js");
 
 const AxeTest  = artifacts.require("../AxeTest.sol");
+const BinTest = artifacts.require("../BinTest.sol");
 const CageTest = artifacts.require("../CageTest.sol");
-const DSAuthTest = artifacts.require("../DSAuthTest.sol");
-const DSGuardTest = artifacts.require("../DSGuardTest.sol");
-const DSMathTest  = artifacts.require("../DSMathTest.sol");
-const DSNoteTest = artifacts.require("../DSNoteTest.sol");
-const DSStopTest = artifacts.require("../DSStopTest.sol");
-const DSTokenBaseTest = artifacts.require("../DSTokenBaseTest.sol");
-const DSTokenTest = artifacts.require("../DSTokenTest.sol");
-const DSValueTest = artifacts.require("../DSValueTest.sol");
+const FeeTaxTest = artifacts.require("../FeeTaxTest.sol");
 const FeeTest = artifacts.require("../FeeTest.sol");
-const GasTest = artifacts.require("../GasTest.sol");
+const GapTest = artifacts.require("../GapTest.sol");
 const LiquidationTest = artifacts.require("../LiquidationTest.sol");
 const SaiTubTest = artifacts.require("../SaiTubTest.sol");
-const TubTest= artifacts.require("../TubTest.sol");
+const TapTest = artifacts.require("../TapTest.sol");
+const TaxTest = artifacts.require("../TaxTest.sol");
+const TubTest = artifacts.require("../TubTest.sol");
 const VoxTest = artifacts.require("../VoxTest.sol");
+const WayTest= artifacts.require("../WayTest.sol");
+
 
 contract("AxeTest", (accounts) => {
 
@@ -111,22 +109,19 @@ contract("AxeTest", (accounts) => {
 
     }
 
-    it("DSStopTest", async () => { await dotests(DSStopTest) })
-    it("DSNoteTest", async () => { await dotests(DSNoteTest) })
     it("AxeTest", async () => { await dotests(AxeTest) })
+    it("BinTest", async () => { await dotests(BinTest) })
     it("CageTest", async () => { await dotests(CageTest) })
-    it("DSAuthTest", async () => { await dotests(DSAuthTest) })
-    it("DSGuardTest", async () => { await dotests(DSGuardTest) })
-    it("DSMathTest", async () => { await dotests(DSMathTest) })
-    it("DSTokenTest", async () => { await dotests(DSTokenTest) })
-    it("DSTokenBaseTest", async () => { await dotests(DSTokenBaseTest) })
-    it("DSValueTest", async () => { await dotests(DSValueTest) })
+    it("FeeTaxTest", async () => { await dotests(FeeTaxTest) })
     it("FeeTest", async () => { await dotests(FeeTest) })
-    it("GasTest", async () => { await dotests(GasTest) })
+    it("GapTest", async () => { await dotests(GapTest) })
     it("LiquidationTest", async () => { await dotests(LiquidationTest) })
     it("SaiTubTest", async () => { await dotests(SaiTubTest) })
+    it("TapTest", async () => { await dotests(TapTest) })
+    it("TaxTest", async () => { await dotests(TaxTest) })
     it("TubTest", async () => { await dotests(TubTest) })
     it("VoxTest", async () => { await dotests(VoxTest) })
+    it("WayTest", async () => { await dotests(WayTest) })
 
 })
 

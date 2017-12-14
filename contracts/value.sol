@@ -1,4 +1,4 @@
-/// stop.sol -- mixin for enable/disable functionality
+/// value.sol - a value is a simple thing, it can be get and set
 
 // Copyright (C) 2017  DappHub, LLC
 
@@ -17,22 +17,24 @@
 
 pragma solidity ^0.4.13;
 
-import "./DSAuth.sol";
-import "./DSNote.sol";
+import './thing.sol';
 
-contract DSStop is DSNote, DSAuth {
-
-    bool public stopped;
-
-    modifier stoppable {
-        require(!stopped);
-        _;
+contract DSValue is DSThing {
+    bool    has;
+    bytes32 val;
+    function peek() public view returns (bytes32, bool) {
+        return (val,has);
     }
-    function stop() public auth note {
-        stopped = true;
+    function read() public view returns (bytes32) {
+        var (wut, haz) = peek();
+        assert(haz);
+        return wut;
     }
-    function start() public auth note {
-        stopped = false;
+    function poke(bytes32 wut) public note auth {
+        val = wut;
+        has = true;
     }
-
+    function void() public note auth {  // unset the value
+        has = false;
+    }
 }

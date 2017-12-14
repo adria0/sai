@@ -4,9 +4,9 @@
 // Copyright (C) 2017  Daniel Brockman <daniel@dapphub.com>
 // Copyright (C) 2017  Rain <rainbreak@riseup.net>
 
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
-import "./SaiTub.sol";
+import "./tub.sol";
 
 contract SaiTap is DSThing {
     DSToken  public  sai;
@@ -34,16 +34,7 @@ contract SaiTap is DSThing {
     }
 
 
-    function SaiTap() public {
-        gap = WAD;
-    }
-
-    function mold(bytes32 param, uint val) public note auth {
-        if (param == 'gap') gap = val;
-    }
-
-    // Associate with tub
-    function turn(SaiTub tub_) public note auth {
+    function SaiTap(SaiTub tub_) public {
         tub = tub_;
 
         sai = tub.sai();
@@ -51,6 +42,12 @@ contract SaiTap is DSThing {
         skr = tub.skr();
 
         vox = tub.vox();
+
+        gap = WAD;
+    }
+
+    function mold(bytes32 param, uint val) public note auth {
+        if (param == 'gap') gap = val;
     }
 
     // Cancel debt
@@ -76,15 +73,14 @@ contract SaiTap is DSThing {
         return rmul(wad, wmul(s2s(), gap));
     }
     function flip(uint wad) internal {
+        require(ask(wad) > 0);
         skr.push(msg.sender, wad);
         sai.pull(msg.sender, ask(wad));
         heal();
     }
     function flop(uint wad) internal {
         skr.mint(sub(wad, fog()));
-        skr.push(msg.sender, wad);
-        sai.pull(msg.sender, ask(wad));
-        heal();
+        flip(wad);
         require(joy() == 0);  // can't flop into surplus
     }
     function flap(uint wad) internal {
@@ -111,18 +107,16 @@ contract SaiTap is DSThing {
     }
     function cash(uint wad) public note {
         require(off);
-        sai.pull(msg.sender, wad);
+        sai.burn(msg.sender, wad);
         require(tub.gem().transfer(msg.sender, rmul(wad, fix)));
+    }
+    function mock(uint wad) public note {
+        require(off);
+        sai.mint(msg.sender, wad);
+        require(tub.gem().transferFrom(msg.sender, this, rmul(wad, fix)));
     }
     function vent() public note {
         require(off);
-
-        // TODO: maybe this is vulnerable to rounding mismatch. Just
-        // accumulate the sai instead, or burn on cash.  Then all the
-        // sin from post-cage liquidation will just remain in the tap
-        // forever.
-        heal();
-
         skr.burn(fog());
     }
 }

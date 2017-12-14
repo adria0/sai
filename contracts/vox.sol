@@ -4,9 +4,9 @@
 // Copyright (C) 2016,2017  Daniel Brockman <daniel@dapphub.com>
 // Copyright (C) 2017  Rain <rainbreak@riseup.net>
 
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
-import "./DSThing.sol";
+import "./thing.sol";
 
 contract SaiVox is DSThing {
     uint256  _par;

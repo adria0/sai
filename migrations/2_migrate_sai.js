@@ -1,3 +1,4 @@
+/*
 const BigNumber = require("bignumber.js");
 
 const Migrations = artifacts.require("./Migrations.sol");
@@ -11,9 +12,9 @@ const DSGuard = artifacts.require("./DSGuard.sol");
 const SaiTub  = artifacts.require("./SaiTub.sol");
 const SaiTop  = artifacts.require("./SaiTop.sol");
 const SaiMom  = artifacts.require("./SaiMom.sol");
-
+*/
 module.exports = function(deployer) {
-
+/*
  	deployer.then( async () => {
 
  		const gem = await DSToken.new("ETH");
@@ -80,5 +81,5 @@ module.exports = function(deployer) {
 		await mom.setWay(ray(1.0))
 		await mom.setFee((10002 * 10 ** 23)-1)
  	})
-
+*/
 };

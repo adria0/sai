@@ -4,12 +4,12 @@
 // Copyright (C) 2017  Daniel Brockman <daniel@dapphub.com>
 // Copyright (C) 2017  Rain <rainbreak@riseup.net>
 
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
-import './DSThing.sol';
-import './SaiTub.sol';
-import './SaiTop.sol';
-import './SaiTap.sol';
+import './thing.sol';
+import './tub.sol';
+import './top.sol';
+import './tap.sol';
 
 contract SaiMom is DSThing {
     SaiTub  public  tub;
@@ -22,8 +22,8 @@ contract SaiMom is DSThing {
         vox = vox_;
     }
     // Debt ceiling
-    function setHat(uint wad) public note auth {
-        tub.mold("hat", wad);
+    function setCap(uint wad) public note auth {
+        tub.mold("cap", wad);
     }
     // Liquidation ratio
     function setMat(uint ray) public note auth {
@@ -56,6 +56,18 @@ contract SaiMom is DSThing {
     // Join/Exit Spread
     function setTubGap(uint wad) public note auth {
         tub.mold("gap", wad);
+    }
+    // ETH/USD Feed
+    function setPip(DSValue pip_) public note auth {
+        tub.setPip(pip_);
+    }
+    // MKR/USD Feed
+    function setPep(DSValue pep_) public note auth {
+        tub.setPep(pep_);
+    }
+    // TRFM
+    function setVox(SaiVox vox_) public note auth {
+        tub.setVox(vox_);
     }
     // Boom/Bust Spread
     function setTapGap(uint wad) public note auth {

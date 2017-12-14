@@ -1,4 +1,4 @@
-/// value.sol - a value is a simple thing, it can be get and set
+// thing.sol - `auth` with handy mixins. your things should be DSThings
 
 // Copyright (C) 2017  DappHub, LLC
 
@@ -17,24 +17,14 @@
 
 pragma solidity ^0.4.13;
 
-import './DSThing.sol';
+import './auth.sol';
+import './note.sol';
+import './math.sol';
 
-contract DSValue is DSThing {
-    bool    has;
-    bytes32 val;
-    function peek() public view returns (bytes32, bool) {
-        return (val,has);
+contract DSThing is DSAuth, DSNote, DSMath {
+
+    function S(string s) internal pure returns (bytes4) {
+        return bytes4(keccak256(s));
     }
-    function read() public view returns (bytes32) {
-        var (wut, haz) = peek();
-        assert(haz);
-        return wut;
-    }
-    function poke(bytes32 wut) public note auth {
-        val = wut;
-        has = true;
-    }
-    function void() public note auth {  // unset the value
-        has = false;
-    }
+
 }

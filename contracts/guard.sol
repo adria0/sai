@@ -17,7 +17,7 @@
 
 pragma solidity ^0.4.13;
 
-import "./DSAuth.sol";
+import "./auth.sol";
 
 contract DSGuardEvents {
     event LogPermit(
@@ -76,7 +76,7 @@ contract DSGuard is DSAuth, DSAuthority, DSGuardEvents {
 contract DSGuardFactory {
     mapping (address => bool)  public  isGuard;
 
-    function newGuard() public returns (DSGuard guard) { // #amb everybody can call this function???
+    function newGuard() public returns (DSGuard guard) {
         guard = new DSGuard();
         guard.setOwner(msg.sender);
         isGuard[guard] = true;
