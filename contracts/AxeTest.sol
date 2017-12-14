@@ -2,7 +2,8 @@ pragma solidity ^0.4.18;
 
 import "./SaiTestBase.sol";
 
-contract AxeTest is SaiTestBase {
+contract AxeTest is SaiTestBase  {
+    
     function axeSetup() public returns (bytes32) {
         mom.setCap(1000 ether);
         mark(1 ether);
@@ -78,4 +79,5 @@ contract AxeTest is SaiTestBase {
         top.flow();
         assertEq(tub.ink(cup), 10 ether);
     }
+    
 }

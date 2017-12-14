@@ -104,8 +104,8 @@ contract FakePerson {
         tap.cash(sai.balanceOf(this));
     }
 }
-
 contract SaiTestBase is DSTest, DSMath {
+
     DevVox   vox;
     DevTub   tub;
     DevTop   top;
@@ -174,6 +174,7 @@ contract SaiTestBase is DSTest, DSMath {
         sin = DSToken(daiFab.sin());
         skr = DSToken(daiFab.skr());
         vox = DevVox(daiFab.vox());
+        vox.era();
         tub = DevTub(daiFab.tub());
         tap = SaiTap(daiFab.tap());
         top = DevTop(daiFab.top());
@@ -194,8 +195,6 @@ contract SaiTestBase is DSTest, DSMath {
         mom.setCap(20 ether);
     }
 }
-
-
 
 
 

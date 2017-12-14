@@ -56,7 +56,7 @@ contract("AxeTest", (accounts) => {
 
     dotests = async contract => {
 
-        let gas = 2000000000
+        let gas = web3.toBigNumber('0xfffffffffff',16)
 
         let hasSetup = false
         let abi
